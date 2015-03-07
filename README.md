@@ -17,24 +17,25 @@
 6. 内网主机：InnerServer获得CommandFileName，然后执行CommandFileName，将结果返回InnerServerProxy
 7. 阿里云：InnerServerProxy将结果转给HttpServer，HttpServer响应客户端
 
-##路由服务器启动
+##使用
+###路由服务器启动
 在阿里云主机上启动路由服务器，监听端口8888
 ```shell
 java com.whatwhatgame.p2p.router.P2PRouterServer 8888
 ```
 启动后在8888等待前来注册的内网服务器
 
-##内网服务器启动
+###内网服务器启动
 启动需要传递参数：  
 1. 阿里云主机IP  
 2. 阿里云监听的端口 8888  
 3. 希望在阿里云上开启的服务端口 ServicePort  
 ```shell
-com.whatwhatgame.p2p.server.P2PInnerServer IP 8888 ServicePort
+java com.whatwhatgame.p2p.server.P2PInnerServer IP 8888 ServicePort
 ```
 启动连接阿里云的路由服务器，并且绑定这个链接的socket，这样客户端请求能够转发到内网
 
-##客户端访问
+###客户端访问
 在浏览器的地址栏里面输入  
 http://HttpServer：ServerPort/cgi?command=CommandFileName  
 通过阿里云主机转发到内网，执行并返回结果  
@@ -44,6 +45,6 @@ http://HttpServer：ServerPort/cgi?command=CommandFileName
 1. 死掉自动重启  
 2. 按周期主动重启  
 
-##使用场景
+##应用
 外网请求转换为内网命令执行  
 我的应用场景就是远程遥控树莓派小车，http://whatwhatgame.com/   这样在浏览器里面发送【前后左右停】命令，通过阿里云转发到内网执行，从而控制小车的运动。（同时把小车的拍摄的视频传回客户端，实现远程收看，远程遥控，写到此处发现和srs（流式媒体推送服务器：上面网站使用此提供视频服务）的思路很类似：https://github.com/winlinvip/simple-rtmp-server/wiki/v1_CN_Home）
