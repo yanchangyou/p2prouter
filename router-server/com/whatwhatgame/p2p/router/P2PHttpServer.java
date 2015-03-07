@@ -2,6 +2,7 @@ package com.whatwhatgame.p2p.router;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.URI;
 import java.util.HashMap;
@@ -34,7 +35,7 @@ public class P2PHttpServer {
 				server.serverProxy.close();
 			}
 
-			httpServer = HttpServer.create(inetSock, 1000);
+			httpServer = HttpServer.create(inetSock, 20000);
 
 			portHttpServerMap.put(port, this);
 
@@ -53,24 +54,29 @@ public class P2PHttpServer {
 			@Override
 			public void handle(HttpExchange exchange) throws IOException {
 
-				URI uri = exchange.getRequestURI();
+				try {
 
-				String command = P2PUtil.parsingCommand(uri.toString());
+					URI uri = exchange.getRequestURI();
 
-				log.info("command : " + command);
-				String responseString = serverProxy.executeCommand(command);
+					String command = P2PUtil.parsingCommand(uri.toString());
 
-				if (P2PUtil.isP2PErrorMessage(responseString)) {
-					System.err.println(serverProxy.socket + " : " + responseString);
-					responseString = "inner error, watch console!";
+					log.info("command : " + command);
+					String responseString = serverProxy.executeCommand(command);
+					if (P2PUtil.isP2PErrorMessage(responseString)) {
+						System.err.println(serverProxy.socket + " : " + responseString);
+					}
+
+					exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, responseString.getBytes().length);
+					OutputStream out = exchange.getResponseBody();
+
+					out.write(responseString.getBytes());
+					out.flush();
+					out.close();
+				} catch (IOException e) {
+					throw e;
+				} finally {
+					exchange.close();
 				}
-
-				exchange.sendResponseHeaders(200, responseString.length());
-				OutputStream out = exchange.getResponseBody();
-
-				out.write(responseString.getBytes());
-				out.flush();
-				out.close();
 			}
 		});
 	}

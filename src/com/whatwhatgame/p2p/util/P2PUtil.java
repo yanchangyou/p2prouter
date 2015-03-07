@@ -14,7 +14,7 @@ import com.whatwhatgame.p2p.bean.RouterServerAddress;
 
 public class P2PUtil {
 
-	static String OS_CHARSET = System.getProperty("file.encoding");
+	static String OS_CHARSET = System.getProperty("sun.jnu.encoding");
 
 	public static Socket generateRouterSocket(RouterServerAddress address) throws IOException {
 		return new Socket(address.getHost(), address.getPort());
@@ -72,10 +72,10 @@ public class P2PUtil {
 		String path = file.getAbsolutePath();
 		System.out.println("command : " + path.replace(".", "") + command);
 		Runtime runtime = Runtime.getRuntime();
-		
-		//安全性考虑
+
+		// 安全性考虑
 		command = converToSecurityCommand(command);
-		
+
 		Process process = runtime.exec("command" + File.separatorChar + command);
 
 		BufferedReader read = convertToReader(process.getInputStream());
@@ -91,7 +91,7 @@ public class P2PUtil {
 	 * @return
 	 */
 	public static String converToSecurityCommand(String command) {
-		
+
 		if (command.startsWith("/") || command.startsWith("\\")) {
 			command = command.substring(1);
 		}
@@ -104,14 +104,21 @@ public class P2PUtil {
 		String line = null;
 		StringBuffer buf = new StringBuffer();
 		while (!isP2PContentEndLine(line = read.readLine())) {
-			buf.append(new String(line.getBytes(), P2PUtil.OS_CHARSET)).append("\r\n");
+			buf.append(convertContentByOSCharset(line)).append("\r\n");
 		}
 
 		return buf.toString();
 	}
-	
-	public static String covertContentByCharset(String content) throws IOException {
-		return new String(content.getBytes("gbk"));
+
+	/**
+	 * 按照操作系统字符集转码，成utf-8
+	 * 
+	 * @param content
+	 * @return
+	 * @throws IOException
+	 */
+	public static String convertContentByOSCharset(String content) throws IOException {
+		return new String(content.getBytes(), P2PUtil.OS_CHARSET);
 	}
 
 	/**
@@ -144,22 +151,22 @@ public class P2PUtil {
 		}
 		return uri.substring(indexOfCommand + COMMAND_BEGIN.length());
 	}
-	
+
 	public static String P2P_ERROR_MESSAGE_PREFIX = "P2P-ERROR:";
-	
+
 	public static String packageErrorMessage(String message) {
 		return P2P_ERROR_MESSAGE_PREFIX + convertToOneLine(message);
 	}
-	
+
 	public static String convertToOneLine(String content) {
-		if(content == null) {
+		if (content == null) {
 			return content;
 		}
 		return content.replace('\r', ';').replace('\n', ';');
 	}
-	
+
 	public static boolean isP2PErrorMessage(String message) {
 		return message.startsWith(P2P_ERROR_MESSAGE_PREFIX);
 	}
-	
+
 }
