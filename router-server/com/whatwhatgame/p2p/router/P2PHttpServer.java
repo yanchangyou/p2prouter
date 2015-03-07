@@ -39,13 +39,21 @@ public class P2PHttpServer {
 
 			portHttpServerMap.put(port, this);
 
-			P2PUtil.write(serverProxy.writer, "注册成功！(" + port + ")");
+			String message = "注册成功！(" + port + ")";
+			log.info(message);
+
+			P2PUtil.write(serverProxy.writer, message);
 			P2PUtil.write(serverProxy.writer, P2PUtil.P2P_CONTENT_END_LINE);
 
 		} catch (Exception e) {
+
+			String message = "注册失败！(" + e.getMessage() + ")";
+			log.info(message);
+
 			e.printStackTrace();
-			P2PUtil.write(serverProxy.writer, P2PUtil.packageErrorMessage(e.getMessage()));
+			P2PUtil.write(serverProxy.writer, P2PUtil.packageErrorMessage(message));
 			serverProxy.close();
+			
 			return;
 		}
 
@@ -66,7 +74,9 @@ public class P2PHttpServer {
 						System.err.println(serverProxy.socket + " : " + responseString);
 					}
 
-					exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, responseString.getBytes().length);
+					exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK,
+							responseString.getBytes().length);
+					
 					OutputStream out = exchange.getResponseBody();
 
 					out.write(responseString.getBytes());

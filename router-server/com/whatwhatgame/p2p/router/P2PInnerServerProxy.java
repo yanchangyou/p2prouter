@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.logging.Logger;
 
 import com.whatwhatgame.p2p.util.P2PUtil;
 
@@ -14,6 +15,8 @@ import com.whatwhatgame.p2p.util.P2PUtil;
  *
  */
 public class P2PInnerServerProxy extends Thread {
+
+	static Logger log = Logger.getAnonymousLogger();
 
 	Socket socket;
 	BufferedWriter writer;
@@ -34,13 +37,9 @@ public class P2PInnerServerProxy extends Thread {
 		return result;
 	}
 
-	public static void service(Socket socket) {
+	public static void service(Socket socket) throws IOException {
 
-		try {
-			new P2PInnerServerProxy(socket).start();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		new P2PInnerServerProxy(socket).start();
 
 	}
 
@@ -54,6 +53,8 @@ public class P2PInnerServerProxy extends Thread {
 			httpServer = new P2PHttpServer(servicePort, this);
 
 			httpServer.start();
+			
+			log.info("代理服务器启动(" + servicePort + ")。。。");
 
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -80,7 +80,7 @@ public class P2PUtil {
 
 		BufferedReader read = convertToReader(process.getInputStream());
 
-		return readContent(read);
+		return readOSContent(read);
 	}
 
 	/**
@@ -101,10 +101,30 @@ public class P2PUtil {
 	}
 
 	public static String readContent(BufferedReader read) throws IOException {
+		return readContent(read, null);
+	}
+
+	/**
+	 * 读取操作系统内容，需要转码，其它情况不自动转
+	 * 
+	 * @param read
+	 * @return
+	 * @throws IOException
+	 */
+	public static String readOSContent(BufferedReader read) throws IOException {
+		return readContent(read, OS_CHARSET);
+	}
+
+	public static String readContent(BufferedReader read, String charset) throws IOException {
 		String line = null;
 		StringBuffer buf = new StringBuffer();
 		while (!isP2PContentEndLine(line = read.readLine())) {
-			buf.append(convertContentByOSCharset(line)).append("\r\n");
+			if (charset != null) {
+				buf.append(convertContentByCharset(line, charset));
+			} else {
+				buf.append(line);
+			}
+			buf.append("\r\n");
 		}
 
 		return buf.toString();
@@ -118,7 +138,11 @@ public class P2PUtil {
 	 * @throws IOException
 	 */
 	public static String convertContentByOSCharset(String content) throws IOException {
-		return new String(content.getBytes(), P2PUtil.OS_CHARSET);
+		return convertContentByCharset(content, P2PUtil.OS_CHARSET);
+	}
+
+	public static String convertContentByCharset(String content, String charset) throws IOException {
+		return new String(content.getBytes(), charset);
 	}
 
 	/**

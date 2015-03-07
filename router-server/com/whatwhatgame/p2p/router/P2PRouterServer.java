@@ -21,8 +21,13 @@ public class P2PRouterServer {
 		log.info("server start at : " + port);
 		try {
 			while (true) {
-				Socket socket = serverSocket.accept();
-				P2PInnerServerProxy.service(socket);
+				try {
+					Socket socket = serverSocket.accept();
+					log.info("注册请求开始：" + socket);
+					P2PInnerServerProxy.service(socket);
+				} catch(Exception e) {
+					e.printStackTrace();
+				}
 			}
 		} finally {
 			log.info("server stop at : " + port);
