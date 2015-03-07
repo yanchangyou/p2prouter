@@ -1,7 +1,7 @@
 # p2prouter
 
 ##背景
-以前使用花生壳（动态域名），能实现局域网的服务器，在公网上也能访问，但是我在linux下面，花生壳不能正常工作，网上查找资料没有找到最终解决办法，bbs提问也无人解答；于是自己尝试做一个类似功能：在外网也能访问内网服务器。
+以前使用花生壳（动态域名），能实现局域网的服务器，在公网上也能访问，但是我在linux下面，花生壳不能正常工作，网上查找资料没有找到最终解决办法，bbs提问也无人解答；于是自己尝试做一个类似功能：在外网也能访问内网服务器。  
 刚好，我有一台阿里云主机，于是一个想法产生了：阿里云作为代理，访问内网。
 
 ##方案
@@ -25,25 +25,25 @@ java com.whatwhatgame.p2p.router.P2PRouterServer 8888
 启动后在8888等待前来注册的内网服务器
 
 ##内网服务器启动
-启动需要传递参数：
-1. 阿里云主机IP
-2. 阿里云监听的端口 8888
-3. 希望在阿里云上开启的服务端口 ServicePort
+启动需要传递参数：  
+1. 阿里云主机IP  
+2. 阿里云监听的端口 8888  
+3. 希望在阿里云上开启的服务端口 ServicePort  
 ```shell
 com.whatwhatgame.p2p.server.P2PInnerServer IP 8888 ServicePort
 ```
 启动连接阿里云的路由服务器，并且绑定这个链接的socket，这样客户端请求能够转发到内网
 
 ##客户端访问
-在浏览器的地址栏里面输入
-http://HttpServer：ServerPort/cgi?command=CommandFileName
-通过阿里云主机转发到内网，执行并返回结果
+在浏览器的地址栏里面输入  
+http://HttpServer：ServerPort/cgi?command=CommandFileName  
+通过阿里云主机转发到内网，执行并返回结果  
 
 ##补充
-由于tcp链接的不稳定，在shell中加入了failover的思路，在RouterServer和InnerServer都添加两种机制
-1. 死掉自动重启
-2. 按周期主动重启
+由于tcp链接的不稳定，在shell中加入了failover的思路，在RouterServer和InnerServer都添加两种机制  
+1. 死掉自动重启  
+2. 按周期主动重启  
 
 ##使用场景
-外网请求转换为内网命令执行
-我的应用场景就是远程遥控树莓派小车，http://whatwhatgame.com/ 这样在浏览器里面发送【前后左右停】命令，通过阿里云转发到内网执行，从而控制小车的运动。（同时把小车的拍摄的视频传回客户端，实现远程收看，远程遥控，写到此处发现借鉴了srs的思路：https://github.com/winlinvip/simple-rtmp-server/wiki/v1_CN_Home）
+外网请求转换为内网命令执行  
+我的应用场景就是远程遥控树莓派小车，http://whatwhatgame.com/   这样在浏览器里面发送【前后左右停】命令，通过阿里云转发到内网执行，从而控制小车的运动。（同时把小车的拍摄的视频传回客户端，实现远程收看，远程遥控，写到此处发现借鉴了srs的思路：https://github.com/winlinvip/simple-rtmp-server/wiki/v1_CN_Home）
