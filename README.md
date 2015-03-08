@@ -61,7 +61,17 @@ http://HttpServer：ServerPort/cgi?command=CommandFileName
 ##补充
 由于tcp链接的不稳定，在shell中加入了failover的思路，在RouterServer和InnerServer都添加两种机制  
 1. 死掉自动重启  
-2. 按周期主动重启  
+2. 按周期主动重启
+p2p-inner-server
+```shell
+chmod +x p2p-inner-server-kill.sh
+./p2p-inner-server-kill.sh
+```
+p2p-router-server
+```shell
+chmod +x p2p-router-server-kill.sh
+./p2p-router-server-kill.sh
+```
 
 ##应用
 外网请求转换为内网命令执行  
