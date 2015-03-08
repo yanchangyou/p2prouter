@@ -23,6 +23,15 @@
 ```shell
 java com.whatwhatgame.p2p.router.P2PRouterServer 8888
 ```
+或者
+```shell
+java -jar p2p-router-server.jar 8888
+```
+或者(默认8888端口，进入sh脚本里面修改)
+```shell
+chmod +x p2p-router-server.sh
+./p2p-router-server.sh
+```
 启动后在8888等待前来注册的内网服务器
 
 ###内网服务器启动
@@ -32,6 +41,15 @@ java com.whatwhatgame.p2p.router.P2PRouterServer 8888
 3. 希望在阿里云上开启的服务端口 ServicePort  
 ```shell
 java com.whatwhatgame.p2p.server.P2PInnerServer IP 8888 ServicePort
+```
+或者
+```shell
+java -jar p2p-router-server.jar IP 8888 ServicePort
+```
+或者(端口信息在p2p-inner-server.sh里面，使用时需要修改)
+```shell
+chmod +x p2p-inner-server.sh
+./p2p-inner-server.sh
 ```
 启动连接阿里云的路由服务器，并且绑定这个链接的socket，这样客户端请求能够转发到内网
 
