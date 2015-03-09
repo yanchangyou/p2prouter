@@ -55,7 +55,7 @@ chmod +x p2p-inner-server.sh
 
 ###客户端访问
 在浏览器的地址栏里面输入  
-http://HttpServer：ServerPort/cgi?command=CommandFileName  
+http://HttpServer:ServerPort/cgi?command=CommandFileName  
 通过阿里云主机转发到内网，执行并返回结果  
 
 ##补充
